@@ -1,18 +1,25 @@
-#include <QtWidgets/QApplication>
+﻿#include <QtWidgets/QApplication>
 #include <QTextCodec>
 #include <QApplication>
+#include <QStyleFactory>
+
 #include "frmInput/frminput.h"
 #include "./mainWindow/MainWindow.h"
+
+#include "client.h"
 
 int main(int argc, char *argv[])
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
+    QApplication::setStyle(QStyleFactory::create("Fusion"));
     QApplication app(argc, argv);
     QFont font = app.font();
     font.setPointSize(15);
     app.setFont(font);
 
+    BaseLib::InitBaseLib();
+    INIT_DBG_CODE
     MainWindow* mainwindow = new MainWindow();
     mainwindow->setFocusPolicy(Qt::ClickFocus);
 
@@ -20,9 +27,7 @@ int main(int argc, char *argv[])
 
     QPixmap pixmap;
     pixmap.load(":/images/images/screen.png");
-
     palette.setBrush(mainwindow->backgroundRole(),QBrush(pixmap.scaled(mainwindow->size(),Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
-
     palette.setColor(QPalette::WindowText, "#000000");
     palette.setColor(QPalette::ButtonText, "#FFFFFF");
     palette.setColor(QPalette::Button, "#000000");

@@ -1,0 +1,16 @@
+*******************version:1.3.0*****************************************
+添加moveNonPlan(strPath)指令，strPath是存放了规划好路径的文件路径。
+*******************version:1.3.0*****************************************
+重构解析器：
+解析器与server、client之间通过指针调用。
+server/client 通过ptrInter指针调用run/stop等接口。
+Interpreter 通过m_pServer调用move指令。
+hrInterpreter、abbInterpreter继承自RobotInterpreter，差异性封装在各自的类里面。
+*******************version:1.2.5*****************************************
+统一Windows、Linux动态库的生成
+1.添加编译库控制开关
+	option (Library_Export "export client api" ON)
+2.添加动态库安装路径
+	cmake -DCMAKE_INSTALL_PREFIX=/my/library/path ..
+3.更改动态库版本号位置robotBase.cpp
+*******************version:1.2.4******************************************

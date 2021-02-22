@@ -25,27 +25,47 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
+# 非EFT平台注释
+DEFINES += EFT_PLATFORM
+
+INCLUDEPATH += ../BaseLib
+
 SOURCES += \
        main.cpp \
        frmInput/frminput.cpp \
        mainWindow/MainWindow.cpp \
-    CFileIO.cpp
+    mainWindow/MyThread.cpp \
+    robotData/robotData.cpp \
+    mainWindow/settingWidget.cpp \
+    mainWindow/editWidget.cpp
 
 HEADERS += \
        frmInput/frminput.h \
        mainWindow/MainWindow.h \
-    CFileIO.hpp
+    mainWindow/MyThread.h \
+    mainWindow/macroDefine.hpp \
+    robotData/robotData.h \
+    mainWindow/settingWidget.h \
+    mainWindow/editWidget.h
 
-#x86平台
-#INCLUDEPATH += /usr/include/libxml2/
-#LIBS += -lxml2
-#arm平台
-INCLUDEPATH += /opt/zynq/libxml2-arm/include/libxml2
-LIBS += -L/opt/zynq/libxml2-arm/lib -lxml2
+win32{
+INCLUDEPATH += C:/Users/yl/Desktop/windows/ZlibReleasex64
+INCLUDEPATH += C:/Users/yl/Desktop/windows/quazip
+
+LIBS +=-LC:/Users/yl/Desktop/windows/ZlibReleasex64 -lquazip
+}
+
+INCLUDEPATH += ../libevtFrame/libevent/include
+
+LIBS += -L../../libevtFrame/libevent/lib -Wl,--rpath=./ -levent -levent_pthreads
+
+INCLUDEPATH += ../libevtFrame/client \
+               ../libevtFrame/common
+
+LIBS += -L../../libevtFrame -Wl,--rpath=./ -lclient
 
 FORMS += \
     frmInput/frminput.ui
 
 RESOURCES += \
     src.qrc
-

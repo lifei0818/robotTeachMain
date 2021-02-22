@@ -1,5 +1,9 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+
+#ifdef _MSC_VER
+#pragma execution_character_set("utf-8")
+#endif
 
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QWidget>
@@ -7,41 +11,55 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QLineEdit>
-#include <QtWidgets/QGroupBox>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QTableWidget>
-#include <QtWidgets/QTableWidgetItem>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QScrollBar>
-#include <QtWidgets/QListView>
 #include <QtWidgets/QMessageBox>
-#include <QtWidgets/QFileDialog>
+#include <QTextEdit>
+#include <QRadioButton>
+#include <QListWidget>
+#include <QListWidgetItem>
 #include <QProcess>
 #include <QTimer>
-#include <QMutex>
 #include <QtNetwork>
 #include <QFile>
+#include <QFileInfo>
 #include <QDir>
+#include <QApplication>
+#include <QSettings>
+#include <QFileInfoList>
+#include <QEvent>
+#include <QKeyEvent>
+#include <QScrollBar>
+#include <QProgressBar>
+
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonParseError>
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <map>
 
-#include <QApplication>
-#include <QDir>
+#ifdef Q_OS_WIN32
+    #include <stdlib.h>
+    #include <JlCompress.h>
+    #include "windows.h"
+#endif
 
-#include <thread>
+#include "MyThread.h"
+#include "macroDefine.hpp"
 
-#include <sstream>
-#include <libxml/tree.h>
-#include <libxml/parser.h>
-#include <libxml/xmlreader.h>
+#include "settingWidget.h"
+#include "editWidget.h"
 
-#include "../CFileIO.hpp"
-//#include "../macroDefine.h"
+#include "robotData/robotData.h"
 
+/**
+ * @brief 程序主界面
+ */
 class MainWindow : public QDialog
 {
     Q_OBJECT
@@ -49,108 +67,101 @@ class MainWindow : public QDialog
 public:
     MainWindow();
     ~MainWindow();
-    void showEvent(QShowEvent *);
-    QPushButton* initButton(std::string);
-    void addButton(QWidget *);
 
 private:
     void initUI();
-    void initState();
     void connectSignalSlot();
-    void deleteSignalSlot();
 
-    void initTCPConfig();
-    bool initTCPConnect();
-    void read_Cache();
-    void write_Cache();
-//    int checkState();
+    void initButton();  ///< 初始化示教器按钮
 
-    void read_tcp_local(QString &m_IP);
+    void robotStart();  ///< 启动自定义线程示教器
 
-    int  FindFile(const QString &path,const QString &name);
+    void timeSleep();  ///< 休眠一段时间
 
-    void time_sleep();
+//    void CopyOrMove(QString, QString, bool);
 
-private:  
-    QDir PATH;
+protected:
+    void keyPressEvent(QKeyEvent*);  ///< 重载键盘点击事件,拦截回车键点击
 
-    QString path_cache;
-    QWidget* buttonChoice;
+private: 
+    QString m_localIP;  ///< 本机IP
+    QString m_pathCache;  ///< 缓存文件路径
 
-    std::vector<std::string> m_robotTeach;
-    std::string m_IP;
-    int m_Port;
+    QString m_IP;  ///< 服务端IP
+    int m_Port;  ///< 服务端端口
 
-    QPushButton* m_robotTeachHR;
-    QPushButton* m_robotTeachABB;
-    QPushButton* m_robotTeachKUKA;
-    QPushButton* m_robotTeachFNK;
-    QPushButton* m_robotTeachAC;
-    QPushButton* m_robotTeachHS;
+    QPushButton* m_robotTeachEFT;  ///< EFT示教器按钮
+    QPushButton* m_robotTeachHR;  ///< HR示教器按钮
+    QPushButton* m_robotTeachABB;  ///< ABB示教器按钮
+    QPushButton* m_robotTeachKUKA;  ///< KUKA示教器按钮
+    QPushButton* m_robotTeachFNK;  ///< FNK示教器按钮
+    QPushButton* m_robotTeachAC;  ///< AC示教器按钮
 
-    bool robotHR=0;
-    bool robotABB=0;
-    bool robotKUKA=0;
-    bool robotFNK=0;
-    bool robotAC=0;
-    bool robotHS=0;
+    QPushButton* m_buttonMore;  ///< 功能窗口按钮
 
-    QVBoxLayout* layoutMain_V;
-    QHBoxLayout* layoutMain_H;
-    QHBoxLayout* layoutFirst;
-    QHBoxLayout* layoutSecond;
+    QLineEdit* m_editIPAddr;  ///< 编辑地址
+    QLineEdit* m_editIPPort;  ///< 编辑端口
 
-    QPushButton* m_update;
+    QLabel* m_labelLocalAddr;  ///< 显示本机IP
 
-    QLabel* m_labelIP;
-    QLineEdit* m_editIPAddr;
-    QLineEdit* m_editIPPort;
+    QTimer* m_timer;  ///< 用于定时检测地址
 
-    QLabel* m_labelLocalAddrTitle;
-    QLabel* m_labelLocalAddr;
+#ifdef Q_OS_WIN32
+    QProcess* myProcess = nullptr;
+#endif
 
-    QPixmap m_pixLogo;
-    QLabel* m_labelLogo;
+    QPushButton* m_buttonChangeScreen;  ///< 触摸屏切换按钮
 
-    QPixmap m_pixLogo1;
-    QLabel* m_labelLogo1;
+    QTimer* m_timerChanged;  ///< 触摸屏切换按钮定时器
 
-    QLabel* m_version;
+    settingWidget* m_widgetSetting;  ///< 功能列表窗口
+    editWidget* m_widgetEdit;  ///< 编辑与显示窗口
 
-    QTimer* timer;
+    QDialog* m_tipWidget;  ///< 提示窗口
+    QLabel* m_labelTip;  ///< 程序启动与更新时提示信息
 
-    QProcess* myProcess;
-
-    int m_DirCount=0;
-    int m_FilesCount=0;
-    int m_robotTeachCount=0;
-
-    QWidget* tip;
-    QLabel* tip_text;
-
-    QWidget* tip_update;
-    QLabel* tip_text_update;
 private slots:
-    void tcpConfigChanged();
+    void buttonChangeScreenPressed();  ///< 触摸屏切换按钮按下
+    void buttonChangeScreenReleased();  ///< 触摸屏切换按钮松开
 
-    void buttonHRConnectClicked();
-    void buttonABBConnectClicked();
-    void buttonKUKAConnectClicked();
-    void buttonFNKConnectClicked();
-    void buttonACConnectClicked();
-    void buttonHSConnectClicked();
+    void changeScreen();  ///< 切换触摸屏点击时方向
 
-    void tcpLocalChanged();
-    void nullProcess();
-    void systemUpdate();
+    void tcpConfigChanged();  ///< 处理服务端地址端口改变
 
-    void Tipshow(bool state);
-    void Tipshow_update(bool state);
+    void buttonEFTConnectClicked();  ///< 启动EFT示教器
+    void buttonHRConnectClicked();  ///< 启动HR示教器
+    void buttonABBConnectClicked();  ///< 启动ABB示教器
+    void buttonKUKAConnectClicked();  ///< 启动KUKA示教器
+    void buttonFNKConnectClicked();  ///< 启动FNK示教器
+    void buttonACConnectClicked();  ///< 启动AC示教器
+
+    void tcpLocalChanged();  ///< 处理本机地址改变
+
+#ifdef Q_OS_WIN32
+    void buttonGetNumberClicked();
+    void buttonSetNumberClicked();
+#endif
+
+    void buttonMoreClicked();  ///< 弹出功能列表窗口
+
+    /**
+     * @brief 弹出显示与编辑窗口
+     * @param index 0:地址编辑 1:文件列表 2:更新日志
+     */
+    void showEditWidget(int);
+
+    void showInfo(QString);  ///< 显示提示信息
+
+    void showTip(bool);  ///< 程序启动提示框显示与掩藏
+    void showUpdateTip();  ///< 更新提示框显示
 
 signals:
-    void buttonOneClicked();
-    void signal_tipshow(bool);
-    void signal_tipshow_update(bool);
+    void signalTipShow(bool);  ///< 程序启动提示框显示信号
+
+    void signalUpdateRobotSoft();  ///< 更新提示框显示信号
+private:
+    QThread* firstThread;  ///< QT线程
+    MyThread* myObjectThread;  ///< 自定义线程
 };
 
 #endif // MAINWINDOW_H

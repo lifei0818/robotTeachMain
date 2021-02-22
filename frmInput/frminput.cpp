@@ -1,8 +1,6 @@
-#include "frminput.h"
+﻿#include "frminput.h"
 #include "ui_frminput.h"
 #include "QtWidgets/QDesktopWidget"
-
-#include<QDebug>
 
 frmInput *frmInput::_instance = 0;
 frmInput::frmInput(QWidget *parent) :
@@ -26,27 +24,6 @@ void frmInput::Init()
     this->labFontSize = 30;
     changeStyle("#4D4D4D", "#292929", "#D9D9D9", "#CACAD0");
     this->ChangeFont();
-
-    ui->btnSpace->hide();
-    ui->btnOther17->hide();
-    ui->btnOther21->hide();
-    ui->btnOther14->hide();
-    ui->btnOther18->hide();
-    ui->btnOther16->hide();
-    ui->btnOther15->hide();
-    ui->btnOther13->hide();
-    ui->btnOther12->hide();
-    ui->btnOther11->hide();
-    ui->btnOther20->hide();
-    ui->btnOther19->hide();
-    ui->btnOther8->hide();
-    ui->btnOther7->hide();
-    ui->btnOther6->hide();
-    ui->btnOther4->hide();
-    ui->btnOther3->hide();
-    ui->btnOther2->hide();
-    ui->btnOther5->hide();
-    ui->btnOther1->hide();
 
     ui->lay1->setContentsMargins(0, 0, 0, 0);
     ui->lay1->setSpacing(0);
@@ -77,12 +54,9 @@ void frmInput::mouseReleaseEvent(QMouseEvent *)
 void frmInput::InitForm()
 {
     this->mousePressed = false;
-    //this->setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint); //Qt4和Qt5通用，但是在表格控件中使用会导致程序崩溃
-//    this->setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::WindowDoesNotAcceptFocus); //在表格控件中不会崩溃，但是Qt4将无法使用
+//  this->setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint); //Qt4和Qt5通用，但是在表格控件中使用会导致程序崩溃
+//  this->setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::WindowDoesNotAcceptFocus); //在表格控件中不会崩溃，但是Qt4将无法使用
 
-    QDesktopWidget w;
-    deskWidth = w.availableGeometry().width();
-    deskHeight = w.availableGeometry().height();
     frmWidth = this->width();
     frmHeight = this->height();
 
@@ -119,30 +93,10 @@ void frmInput::InitForm()
 
 void frmInput::InitProperty()
 {
-    ui->btnOther1->setProperty("btnOther", true);
-    ui->btnOther2->setProperty("btnOther", true);
-    ui->btnOther3->setProperty("btnOther", true);
-    ui->btnOther4->setProperty("btnOther", true);
-    ui->btnOther5->setProperty("btnOther", true);
-    ui->btnOther6->setProperty("btnOther", true);
-    ui->btnOther7->setProperty("btnOther", true);
-    ui->btnOther8->setProperty("btnOther", true);
     ui->btnOther9->setProperty("btnOther", true);
     ui->btnOther10->setProperty("btnOther", true);
-    ui->btnOther11->setProperty("btnOther", true);
-    ui->btnOther12->setProperty("btnOther", true);
-    ui->btnOther13->setProperty("btnOther", true);
-    ui->btnOther14->setProperty("btnOther", true);
-    ui->btnOther15->setProperty("btnOther", true);
-    ui->btnOther16->setProperty("btnOther", true);
-    ui->btnOther17->setProperty("btnOther", true);
-    ui->btnOther18->setProperty("btnOther", true);
-    ui->btnOther19->setProperty("btnOther", true);
-    ui->btnOther20->setProperty("btnOther", true);
-    ui->btnOther21->setProperty("btnOther", true);
 
     ui->btnDot->setProperty("btnOther", true);
-    ui->btnSpace->setProperty("btnOther", true);
     ui->btnDelete->setProperty("btnOther", true);
 
     ui->btn0->setProperty("btnNum", true);
@@ -190,18 +144,6 @@ void frmInput::ShowPanel()
     this->setVisible(true);
 }
 
-bool frmInput::checkPress()
-{
-    //只有属于输入法键盘的合法按钮才继续处理
-    bool num_ok = btnPress->property("btnNum").toBool();
-    bool other_ok = btnPress->property("btnOther").toBool();
-    bool letter_ok = btnPress->property("btnLetter").toBool();
-    if (num_ok || other_ok || letter_ok) {
-        return true;
-    }
-    return false;
-}
-
 void frmInput::reClicked()
 {
     if (isPress) {
@@ -215,9 +157,10 @@ void frmInput::setMain(QWidget *main)
     Main = main;
 }
 
-void frmInput::focusChanged(QWidget *oldWidget, QWidget *nowWidget)
+void frmInput::focusChanged(QWidget *oldWidget, QWidget* nowWidget)
 {
-//    qDebug() << "oldWidget:" << oldWidget << " nowWidget:" << nowWidget;
+//    qDebug()<<"oldWidget    "<<oldWidget<<"nowWidget    "<<nowWidget;
+
     if (nowWidget != 0 && !this->isAncestorOf(nowWidget)) {
         //在Qt5和linux系统中(嵌入式linux除外),当输入法面板关闭时,焦点会变成无,然后焦点会再次移到焦点控件处
         //这样导致输入法面板的关闭按钮不起作用,关闭后马上有控件获取焦点又显示.
@@ -230,9 +173,9 @@ void frmInput::focusChanged(QWidget *oldWidget, QWidget *nowWidget)
 #endif
 
         isFirst = false;
-        QWidget * pModalWidget = QApplication::activeModalWidget () ;
+        QWidget* pModalWidget = QApplication::activeModalWidget () ;
 
-        if (NULL != pModalWidget && pModalWidget->inherits("QDialog"))
+        if (nullptr != pModalWidget && pModalWidget->inherits("QDialog"))
         {
             Qt::WindowModality Modality = pModalWidget->windowModality();
           /*Qt::NonModal       The window is not modal and does not block input to other windows.
@@ -293,14 +236,17 @@ void frmInput::focusChanged(QWidget *oldWidget, QWidget *nowWidget)
             ShowPanel();
         } else {
             //需要将输入法切换到最初的原始状态--小写,同时将之前的对象指针置为零
-            currentWidget = 0;
-            currentLineEdit = 0;
-            currentTextEdit = 0;
-            currentPlain = 0;
-            currentBrowser = 0;
+            currentWidget = nullptr;
+            currentLineEdit = nullptr;
+            currentTextEdit = nullptr;
+            currentPlain = nullptr;
+            currentBrowser = nullptr;
             currentEditType = "";
             currentType = "min";
             changeType(currentType);
+
+            emit signalKeyBoardHide();
+
             this->setVisible(false);
         }
 
@@ -313,27 +259,17 @@ void frmInput::focusChanged(QWidget *oldWidget, QWidget *nowWidget)
 
 void frmInput::changeType(QString type)
 {
-    if (type == "max")
+    if (type == QString("max"))
     {
         changeLetter(true);
         ui->btnType->setText(tr("大写"));
         ui->labInfo->setText(tr("输入法--大写"));
-        ui->btnOther12->setText("/");
-        ui->btnOther14->setText(":");
-        ui->btnOther17->setText(",");
-        ui->btnOther18->setText("\\");
-        ui->btnOther21->setText("\"");
     }
     else
     {
         changeLetter(false);
         ui->btnType->setText(tr("小写"));
         ui->labInfo->setText(tr("输入法--小写"));
-        ui->btnOther12->setText("/");
-        ui->btnOther14->setText(":");
-        ui->btnOther17->setText(",");
-        ui->btnOther18->setText("\\");
-        ui->btnOther21->setText("\"");
     }
     //每次切换到模式,都要执行清空之前中文模式下的信息
     ui->labPY->setText("");
@@ -341,8 +277,8 @@ void frmInput::changeType(QString type)
 
 void frmInput::changeLetter(bool isUpper)
 {
-    QList<QPushButton *> btn = this->findChildren<QPushButton *>();
-    foreach (QPushButton * b, btn) {
+    QList<QPushButton*> btn = this->findChildren<QPushButton*>();
+    foreach (QPushButton* b, btn) {
         if (b->property("btnLetter").toBool()) {
             if (isUpper) {
                 b->setText(b->text().toUpper());
@@ -356,34 +292,34 @@ void frmInput::changeLetter(bool isUpper)
 void frmInput::btn_clicked()
 {
     //如果当前焦点控件类型为空,则返回不需要继续处理
-    if (currentEditType == "") {
+    if (currentEditType == QString("")) {
         return;
     }
 
-    QPushButton *btn = (QPushButton *)sender();
+    QPushButton* btn = (QPushButton*)sender();
     QString objectName = btn->objectName();
-    if (objectName == "btnType")
+    if (objectName == QString("btnType"))
     {
-        if (currentType == "min")
-        {
-            currentType = "max";
-        }
-        else
-        {
-            currentType = "min";
+        if (currentType == QString("min")){
+            currentType = QString("max");
+        }else{
+            currentType = QString("min");
         }
         changeType(currentType);
-    } else if (objectName == "btnDelete") {
+    } else if (objectName == QString("btnDelete")) {
         deleteValue();
-    } else if (objectName == "btnClose") {
+    } else if (objectName == QString("btnClose")) {
         Main->setFocus();
+
+        emit signalKeyBoardHide();
+
         this->setVisible(false);
-    } else if (objectName == "btnSpace") {
+    } else if (objectName == QString("btnSpace")) {
         insertValue(" ");
     } else {
         QString value = btn->text();
         //如果是&按钮，因为对应&被过滤,所以真实的text为去除前面一个&字符
-        if (objectName == "btnOther7") {
+        if (objectName == QString("btnOther7")) {
             value = value.right(1);
         }
 
@@ -393,15 +329,15 @@ void frmInput::btn_clicked()
 
 void frmInput::insertValue(QString value)
 {
-    if (currentEditType == "QLineEdit") {
+    if (currentEditType == QString("QLineEdit")) {
         currentLineEdit->insert(value);
-    } else if (currentEditType == "QTextEdit") {
+    } else if (currentEditType == QString("QTextEdit")) {
         currentTextEdit->insertPlainText(value);
-    } else if (currentEditType == "QPlainTextEdit") {
+    } else if (currentEditType == QString("QPlainTextEdit")) {
         currentPlain->insertPlainText(value);
-    } else if (currentEditType == "QTextBrowser") {
+    } else if (currentEditType == QString("QTextBrowser")) {
         currentBrowser->insertPlainText(value);
-    } else if (currentEditType == "QWidget") {
+    } else if (currentEditType == QString("QWidget")) {
         QKeyEvent keyPress(QEvent::KeyPress, 0, Qt::NoModifier, QString(value));
         QApplication::sendEvent(currentWidget, &keyPress);
     }
@@ -409,9 +345,9 @@ void frmInput::insertValue(QString value)
 
 void frmInput::deleteValue()
 {
-    if (currentEditType == "QLineEdit") {
+    if (currentEditType == QString("QLineEdit")) {
         currentLineEdit->backspace();
-    } else if (currentEditType == "QTextEdit") {
+    } else if (currentEditType == QString("QTextEdit")) {
         //获取当前QTextEdit光标,如果光标有选中,则移除选中字符,否则删除光标前一个字符
         QTextCursor cursor = currentTextEdit->textCursor();
         if(cursor.hasSelection()) {
@@ -419,7 +355,7 @@ void frmInput::deleteValue()
         } else {
             cursor.deletePreviousChar();
         }
-    } else if (currentEditType == "QPlainTextEdit") {
+    } else if (currentEditType == QString("QPlainTextEdit")) {
         //获取当前QTextEdit光标,如果光标有选中,则移除选中字符,否则删除光标前一个字符
         QTextCursor cursor = currentPlain->textCursor();
         if(cursor.hasSelection()) {
@@ -427,7 +363,7 @@ void frmInput::deleteValue()
         } else {
             cursor.deletePreviousChar();
         }
-    } else if (currentEditType == "QTextBrowser") {
+    } else if (currentEditType == QString("QTextBrowser")) {
         //获取当前QTextEdit光标,如果光标有选中,则移除选中字符,否则删除光标前一个字符
         QTextCursor cursor = currentBrowser->textCursor();
         if(cursor.hasSelection()) {
@@ -435,7 +371,7 @@ void frmInput::deleteValue()
         } else {
             cursor.deletePreviousChar();
         }
-    } else if (currentEditType == "QWidget") {
+    } else if (currentEditType == QString("QWidget")) {
         QKeyEvent keyPress(QEvent::KeyPress, Qt::Key_Delete, Qt::NoModifier, QString());
         QApplication::sendEvent(currentWidget, &keyPress);
     }

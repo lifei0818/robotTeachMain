@@ -3,11 +3,18 @@
         <file>images/robot.png</file>
         <file>images/logo.png</file>
         <file>images/KUKArobot.png</file>
-        <file>images/HSrobot.png</file>
         <file>images/HRrobot.png</file>
         <file>images/FNKrobot.png</file>
         <file>images/ACrobot.png</file>
         <file>images/ABBrobot.png</file>
         <file>images/screen.png</file>
+        <file>images/connection.png</file>
+        <file>images/download.png</file>
+        <file>images/settings.png</file>
+        <file>images/updatelog.png</file>
+        <file>images/upload.png</file>
+        <file>images/update.png</file>
+        <file>images/more.png</file>
+        <file>images/newRobot.png</file>
     </qresource>
 </RCC>
